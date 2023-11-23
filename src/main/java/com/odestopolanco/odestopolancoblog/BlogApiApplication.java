@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * Loader class of the project
  */
 @SpringBootApplication
-public class OdestoPolancoBlogApplication {
+public class BlogApiApplication {
 
     /**
      * Entry point of the application
@@ -15,6 +15,6 @@ public class OdestoPolancoBlogApplication {
      * @param args string arguments
      */
     public static void main(String[] args) {
-        SpringApplication.run(OdestoPolancoBlogApplication.class, args);
+        SpringApplication.run(BlogApiApplication.class, args);
     }
 }
