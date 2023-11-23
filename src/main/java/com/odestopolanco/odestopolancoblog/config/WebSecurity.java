@@ -19,7 +19,7 @@ public class WebSecurity {
         http.sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.authorizeHttpRequests(authz ->
                 authz.requestMatchers(HttpMethod.GET, "/v1/posts").hasAnyAuthority("SCOPE_profile")
-                        .anyRequest().authenticated()).oauth2ResourceServer((oauth2) -> oauth2.jwt(jwt -> {
+                        .anyRequest().authenticated()).oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> {
         }));
         return http.build();
     }
