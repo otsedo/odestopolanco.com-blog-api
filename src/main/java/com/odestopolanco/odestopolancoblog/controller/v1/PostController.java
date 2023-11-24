@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -46,14 +47,29 @@ public class PostController {
         return ResponseEntity.ok(post);
     }
 
-    @PutMapping(value = "/post", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Post> updatePost(@RequestBody Post oldPost) {
+    @PutMapping(value = "/post/{postId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Post> updatePost(@RequestBody Post oldPost, @PathVariable long postId) {
+
         Post updatedPost;
         try {
-            if (oldPost.getId() == 0) {
+            var postToUpdate = postService.findPostById(postId);
+            postToUpdate.setUser(oldPost.getUser());
+            postToUpdate.setUpdatedAt(LocalDateTime.now());
+            postToUpdate.setContent(oldPost.getContent());
+            postToUpdate.setSlug(oldPost.getSlug());
+            postToUpdate.setTitle(oldPost.getTitle());
+            postToUpdate.setPublished(oldPost.isPublished());
+            postToUpdate.setUser(oldPost.getUser());
+            postToUpdate.setImageUrl(oldPost.getImageUrl());
+            postToUpdate.setSummary(oldPost.getSummary());
+            postToUpdate.setSubTitle(oldPost.getSubTitle());
+            postToUpdate.setMetaTitle(oldPost.getMetaTitle());
+            //TODO agregar modifiedBy
+            if (postId == 0) {
                 throw new ApiRequestException("You must specify the post ID");
             }
-            updatedPost = postService.savePost(oldPost);
+            postToUpdate.setId(postId);
+            updatedPost = postService.savePost(postToUpdate);
         } catch (Exception e) {
             throw new ApiRequestException(e.getMessage());
         }
