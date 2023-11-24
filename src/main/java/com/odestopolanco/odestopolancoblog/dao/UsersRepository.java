@@ -1,16 +1,14 @@
 package com.odestopolanco.odestopolancoblog.dao;
 
-import com.odestopolanco.odestopolancoblog.domain.Users;
+import com.odestopolanco.odestopolancoblog.domain.User;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.List;
 
-public interface UsersRepository extends PagingAndSortingRepository<Users,Long> {
+public interface UsersRepository extends PagingAndSortingRepository<User, Long> {
+    List<User> findAll();
 
+    User findUsersById(long id);
 
-    List<Users> findAll();
-    Users findUsersById(long id);
-    Users save(Users user);
-
-
+    User save(User user);
 }

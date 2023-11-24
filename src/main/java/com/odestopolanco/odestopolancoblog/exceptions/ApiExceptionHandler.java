@@ -21,15 +21,14 @@ public class ApiExceptionHandler {
     @ExceptionHandler(value = {ApiRequestException.class})
     public ResponseEntity<Object> handleApiRequestException(ApiRequestException e) {
         ApiErrorResponse apiErrorResponse = new ApiErrorResponse("", HttpStatus.BAD_REQUEST, ZonedDateTime.now(ZoneId.of("Z")));
+        apiErrorResponse.setMessage(e.getMessage());
 
         if (e.getMessage().contains(EMAIL_UNIQUE_CONSTRAINT)) {
             apiErrorResponse.setMessage("The email is already taken");
         } else if (e.getMessage().contains(USERNAME_UNIQUE_CONSTRAINT)) {
             apiErrorResponse.setMessage("The username is already taken");
-        } else {
-            log.error(e.getMessage());
-            apiErrorResponse.setMessage("An error occurred while processing the request");
         }
+        log.error(e.getMessage());
 
         return new ResponseEntity<>(apiErrorResponse, HttpStatus.BAD_REQUEST);
     }

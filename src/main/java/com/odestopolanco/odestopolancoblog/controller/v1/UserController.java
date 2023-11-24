@@ -1,20 +1,17 @@
 package com.odestopolanco.odestopolancoblog.controller.v1;
 
-import com.odestopolanco.odestopolancoblog.dao.UserService;
-import com.odestopolanco.odestopolancoblog.domain.Users;
+import com.odestopolanco.odestopolancoblog.dao.services.UserService;
+import com.odestopolanco.odestopolancoblog.domain.User;
 import com.odestopolanco.odestopolancoblog.domain.UsersResponse;
-import jakarta.servlet.http.HttpServletRequest;
+import com.odestopolanco.odestopolancoblog.exceptions.ApiRequestException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.ClassUtils;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.ConstraintViolationException;
-import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,27 +29,46 @@ public class UserController {
 
 
     @GetMapping("/user/{id}")
-    public ResponseEntity<Users> getUserById(@PathVariable long id) {
-        Users user;
+    public ResponseEntity<User> getUserById(@PathVariable long id) {
+        User user;
         try {
             user = userService.findUserById(id);
             if (Objects.isNull(user)) {
                 return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
             }
-
-
-        } catch (DataAccessException e) {
-            log.error("Error while retrieving user {}: ", id, e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        } catch (Exception e) {
+            throw new ApiRequestException(e.getMessage());
         }
         return ResponseEntity.ok(user);
+    }
+
+    @PostMapping(value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<User> createUser(@RequestBody User newUser) {
+        User createdUser;
+        try {
+            createdUser = userService.save(newUser);
+        } catch (Exception e) {
+            throw new ApiRequestException(e.getMessage());
+        }
+        return ResponseEntity.ok(createdUser);
+    }
+
+    @PutMapping(value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<User> updateUser(@RequestBody User currentUser) {
+        User updatedUser;
+        try {
+            updatedUser = userService.save(currentUser);
+        } catch (Exception e) {
+            throw new ApiRequestException(e.getMessage());
+        }
+        return ResponseEntity.ok(updatedUser);
     }
 
     @GetMapping("/users")
     public ResponseEntity<UsersResponse> getAllUsers() {
         UsersResponse users = new UsersResponse();
         try {
-            List<Users> userList = userService.findAllUsers();
+            List<User> userList = userService.findAllUsers();
             if (userList != null) {
                 users.setUsersList(userList);
                 users.setUsersCount(userList.size());
@@ -60,34 +76,8 @@ public class UserController {
             } else {
                 return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
             }
-
-        } catch (DataAccessException e) {
-            log.error("Error while retrieving users: {}", e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        } catch (Exception e) {
+            throw new ApiRequestException(e.getMessage());
         }
-    }
-
-    @PostMapping(value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Users> createUser(@RequestBody Users newUser) {
-        Users createdUser;
-        try {
-            createdUser = userService.save(newUser);
-        } catch (DataAccessException e) {
-            log.error("Error while retrieving users: {}", e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-        return ResponseEntity.ok(createdUser);
-    }
-
-    @PutMapping(value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Users> updateUser(@RequestBody Users currentUser) {
-        Users updatedUser;
-        try {
-            updatedUser = userService.save(currentUser);
-        } catch (DataAccessException e) {
-            log.error("Error while updating the  user: {}", e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-        return ResponseEntity.ok(updatedUser);
     }
 }
