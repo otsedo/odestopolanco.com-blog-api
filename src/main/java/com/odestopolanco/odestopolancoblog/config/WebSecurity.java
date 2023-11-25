@@ -22,10 +22,19 @@ public class WebSecurity {
         http.sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.authorizeHttpRequests(authorize ->
                         authorize
+                                //USERS
+                                .requestMatchers(HttpMethod.GET, "/v1/user/**").hasAnyAuthority(SCOPE_PROFILE)
+                                .requestMatchers(HttpMethod.GET, "/v1/user/by-email/**").hasAnyAuthority(SCOPE_PROFILE)
                                 .requestMatchers(HttpMethod.GET, "/v1/users/**").hasAnyAuthority(SCOPE_PROFILE)
-                                .requestMatchers(HttpMethod.POST, "/v1/users/**").hasAnyAuthority(SCOPE_PROFILE)
-                                .requestMatchers(HttpMethod.PUT, "/v1/users/**").hasAnyAuthority(SCOPE_PROFILE)
+                                .requestMatchers(HttpMethod.POST, "/v1/user/**").hasAnyAuthority(SCOPE_PROFILE)
+                                .requestMatchers(HttpMethod.PUT, "/v1/user/**").hasAnyAuthority(SCOPE_PROFILE)
+                                .requestMatchers(HttpMethod.DELETE, "/v1/user/**").hasAnyAuthority(SCOPE_PROFILE)
+                                //POSTS
                                 .requestMatchers(HttpMethod.GET, "/v1/posts/**").hasAnyAuthority(SCOPE_PROFILE)
+                                .requestMatchers(HttpMethod.GET, "/v1/post/**").hasAnyAuthority(SCOPE_PROFILE)
+                                .requestMatchers(HttpMethod.POST, "/v1/post/**").hasAnyAuthority(SCOPE_PROFILE)
+                                .requestMatchers(HttpMethod.PUT, "/v1/post/**").hasAnyAuthority(SCOPE_PROFILE)
+                                .requestMatchers(HttpMethod.DELETE, "/v1/post/**").hasAnyAuthority(SCOPE_PROFILE)
                                 .anyRequest().denyAll())
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> {
                 }));

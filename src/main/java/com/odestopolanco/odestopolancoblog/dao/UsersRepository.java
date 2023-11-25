@@ -10,6 +10,8 @@ public interface UsersRepository extends PagingAndSortingRepository<User, Long> 
 
     User findUsersById(long id);
 
+    User findUsersByEmail(String email);
+
     User save(User user);
 
 

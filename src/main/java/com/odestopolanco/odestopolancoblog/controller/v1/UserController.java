@@ -44,6 +44,21 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
+    @GetMapping("/user/by-email/{email}")
+    public ResponseEntity<User> getUserByEmail(@PathVariable String email) {
+        User user;
+        try {
+            user = userService.findUserByEmail(email);
+            if (Objects.isNull(user)) {
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            }
+        } catch (DataAccessException e) {
+            log.error("Error while retrieving user by email {}: ", email, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+        return ResponseEntity.ok(user);
+    }
+
     @PostMapping(value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> createUser(@RequestBody User newUser) {
         User createdUser;
