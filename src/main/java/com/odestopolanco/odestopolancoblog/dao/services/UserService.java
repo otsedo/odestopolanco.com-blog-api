@@ -28,6 +28,7 @@ public class UserService {
 
     public User save(User user) {
         User newUser;
+        user.setActive(true);
         try {
             newUser = usersRepository.save(user);
         } catch (Exception e) {

@@ -27,6 +27,7 @@ public class User {
     @Column(unique=true, name = "email_unique_constraint")
     private String email;
     private LocalDateTime lastLogin;
+    @Column(length = 2000)
     private String profilePicture;
     @CreationTimestamp
     @Column(updatable = false)

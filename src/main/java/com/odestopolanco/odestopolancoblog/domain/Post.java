@@ -35,6 +35,7 @@ public class Post {
     private String modifiedBy;
     private String slug;
     private String summary;
+    @Column(length = 2000)
     private String imageUrl;
     private String content;
 }
